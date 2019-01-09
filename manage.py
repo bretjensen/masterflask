@@ -1,4 +1,4 @@
-from main import app, db, User, Post, Comment, Tag
+from main import app, db, User, Post, Comment, Tag, migrate
 
 @app.shell_context_processor
 def make_shell_context():
@@ -8,5 +8,6 @@ def make_shell_context():
         User=User, 
         Post=Post, 
         Comment=Comment, 
-        Tag=Tag
+        Tag=Tag,
+        migrate=migrate
         )

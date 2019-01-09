@@ -10,13 +10,15 @@ from config import DevConfig
 
 app = Flask(__name__)
 app.config.from_object(DevConfig)
-
 db = SQLAlchemy(app)
+migrate = Migrate(app, db)
+
 
 tags = db.Table('post_tags', 
     db.Column('post_id', db.Integer, db.ForeignKey('post.id')),
     db.Column('tag_id', db.Integer, db.ForeignKey('tag.id'))
     )
+
 
 class User(db.Model):
     id = db.Column(db.Integer(), primary_key=True)
@@ -39,7 +41,7 @@ class Post(db.Model):
     id = db.Column(db.Integer(), primary_key=True)
     title = db.Column(db.String(255), nullable=False)
     text = db.Column(db.Text())
-    publish_date = db.Column(db.DateTime(), default=datetime.now)
+    publish_date = db.Column(db.DateTime(), default=datetime.datetime.now)
     comments = db.relationship(
         'Comment',
         backref='post',
@@ -63,7 +65,7 @@ class Comment(db.Model):
     id = db.Column(db.Integer(), primary_key=True)
     name = db.Column(db.String(255), nullable=False)
     text = db.Column(db.Text())
-    date = db.Column(db.DateTime(), default=datetime.now)
+    date = db.Column(db.DateTime(), default=datetime.datetime.now)
     post_id = db.Column(db.Integer(), db.ForeignKey('post.id'))
 
     def __repr__(self):
@@ -105,21 +107,22 @@ def home(page=1):
 
 
 @app.route('/post/<int:post_id>')
-   def post(post_id)
-       post = Post.query.get_or_404(post_id)
+def post(post_id):
+    post = Post.query.get_or_404(post_id)
 
 
 @app.route('/posts_by_user/<string:username>')
-   def posts_by_user(username):
-     user = User.query.filter_by(username=username).first_or_404()
-     posts = user.posts.order_by(Post.publish_date.desc()).all()
-     recent, top_tags = sidebar_data()
-     return render_template(
-       'user.html',
-       user=user,
-       posts=posts,
-       recent=recent,
-       top_tags=top_tags
+def posts_by_user(username):
+    user = User.query.filter_by(username=username).first_or_404()
+    posts = user.posts.order_by(Post.publish_date.desc()).all()
+    recent, top_tags = sidebar_data()
+    
+    return render_template(
+    'user.html',
+    user=user,
+    posts=posts,
+    recent=recent,
+    top_tags=top_tags
 )
 
 if __name__ == "__main__":
