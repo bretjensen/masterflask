@@ -109,6 +109,16 @@ def home(page=1):
 @app.route('/post/<int:post_id>')
 def post(post_id):
     post = Post.query.get_or_404(post_id)
+    tags = post.tags
+    recent, top_tags = sidebar_data()
+
+    return render_template(
+        'post.html',
+        post=post,
+        tags=tags,
+        recent=recent,
+        top_tags=top_tags
+    )
 
 
 @app.route('/posts_by_user/<string:username>')
@@ -124,6 +134,20 @@ def posts_by_user(username):
     recent=recent,
     top_tags=top_tags
 )
+
+@app.route('/posts_by_tag/<string:tag_name>')
+def posts_by_tag(tag_name):
+    tag = Tag.query.filter_by(title=tag_name).first_or_404()
+    posts = tag.posts.order_by(Post.publish_date.desc()).all()
+    recent, top_tags = sidebar_data()
+
+    return render_template(
+        'tag.html',
+        tag=tag,
+        posts=posts,
+        recent=recent,
+        top_tags=top_tags
+    )
 
 if __name__ == "__main__":
     app.run()
