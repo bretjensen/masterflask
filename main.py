@@ -22,7 +22,7 @@ tags = db.Table('post_tags',
 
 class User(db.Model):
     id = db.Column(db.Integer(), primary_key=True)
-    username = db.Column(db.String(255), nullable=False, index=True, unique=True)
+    username = db.Column(db.String(255), index=True, unique=True)
     password = db.Column(db.String(255))
     posts = db.relationship(
         'Post',
@@ -30,7 +30,7 @@ class User(db.Model):
         lazy='dynamic'
     )
 
-    def __init__(self, username):
+    def __init__(self, username=""):
         self.username = username
 
     def __repr__(self):
@@ -39,7 +39,7 @@ class User(db.Model):
 
 class Post(db.Model):
     id = db.Column(db.Integer(), primary_key=True)
-    title = db.Column(db.String(255), nullable=False)
+    title = db.Column(db.String(255))
     text = db.Column(db.Text())
     publish_date = db.Column(db.DateTime(), default=datetime.datetime.now)
     comments = db.relationship(
@@ -54,7 +54,7 @@ class Post(db.Model):
         backref=db.backref('posts', lazy='dynamic')
     )
 
-    def __init__(self, title):
+    def __init__(self, title=""):
         self.title = title
 
     def __repr__(self):
@@ -63,7 +63,7 @@ class Post(db.Model):
 
 class Comment(db.Model):
     id = db.Column(db.Integer(), primary_key=True)
-    name = db.Column(db.String(255), nullable=False)
+    name = db.Column(db.String(255))
     text = db.Column(db.Text())
     date = db.Column(db.DateTime(), default=datetime.datetime.now)
     post_id = db.Column(db.Integer(), db.ForeignKey('post.id'))
@@ -74,9 +74,9 @@ class Comment(db.Model):
 
 class Tag(db.Model):
     id = db.Column(db.Integer(), primary_key=True)
-    title = db.Column(db.String(255), nullable=False, unique=True)
+    title = db.Column(db.String(255), unique=True)
 
-    def __init__(self, title):
+    def __init__(self, title=""):
         self.title = title
 
     def __repr__(self):
