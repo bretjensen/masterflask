@@ -40,6 +40,11 @@
 
 
 {% macro render_posts(posts, pagination=True) %}
+{% if pagination %}
+    {% set _posts = posts.items %}
+{% else %}
+    {% set _posts = posts %}
+{% endif %}
 {% for post in _posts %}
 <div>
     <h1>
