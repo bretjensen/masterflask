@@ -1,4 +1,9 @@
-from main import app, db, User, Post, Comment, Tag, migrate
+import os
+from webapp import db, migrate, create_app
+from webapp.blog.models import User, Post, Tag
+
+env = os.environ.get('WEBAPP_ENV', 'dev')
+app = create_app('config.%s' % env.capitalize())
 
 @app.shell_context_processor
 def make_shell_context():
@@ -7,7 +12,6 @@ def make_shell_context():
         db=db, 
         User=User, 
         Post=Post, 
-        Comment=Comment, 
         Tag=Tag,
         migrate=migrate
         )
