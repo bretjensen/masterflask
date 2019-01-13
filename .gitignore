@@ -10,5 +10,7 @@ secrets.txt
 ./build/*
 .idea/*
 .idea
+.vscode/*
+.vscode
 env 
 venv
