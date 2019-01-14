@@ -1,0 +1,23 @@
+import os
+
+basedir = os.path.abspath(os.path.dirname(__file__))
+
+
+class Config(object):
+    SECRET_KEY = 'A SECRET_KEY'
+    POSTS_PER_PAGE = 10
+    # Your RECAPTCH keys which gan be generated here for localhost 
+    # https://www.google.com/recaptcha/intro/index.html
+    RECAPTCHA_PUBLIC_KEY = ""
+    RECAPTCHA_PRIVATE_KEY = ""
+
+
+class ProdConfig(Config):
+    SQLALCHEMY_DATABASE_URI = 'sqlite:///' + os.path.join(basedir, 'database.db')
+    SLQALCHEMY_TRACK_MODIFICATIONS = False
+
+class DevConfig(Config):
+    DEBUG = True
+    SQLALCHEMY_DATABASE_URI = 'sqlite:///' + os.path.join(basedir, 'database.db')
+    SLQALCHEMY_TRACK_MODIFICATIONS = True
+    SQLALCHEMY_ECHO = True

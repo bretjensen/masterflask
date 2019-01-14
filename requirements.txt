@@ -5,6 +5,8 @@ Jinja2==2.10
 MarkupSafe==1.1.0
 Werkzeug==0.14.1
 flask-sqlalchemy
+flask-bcrypt
 Flask-Migrate
 Flask-WTF
+Flask-Login
 Faker

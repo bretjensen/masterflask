@@ -1,7 +1,9 @@
 from sqlalchemy import func
 from flask import render_template, Blueprint, flash, redirect, url_for, current_app
-from .models import db, Post, Tag, Comment, User, tags
+from .models import db, Post, Tag, Comment, tags
+
 from .forms import CommentForm
+from ..auth.models import User
 
 
 blog_blueprint = Blueprint(
