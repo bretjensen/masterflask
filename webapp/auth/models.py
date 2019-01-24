@@ -1,4 +1,4 @@
-from . import Bcrypt, AnonymousUserMixin
+from . import bcrypt, AnonymousUserMixin
 from .. import db
 
 

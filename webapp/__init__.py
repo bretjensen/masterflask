@@ -11,6 +11,7 @@ def page_not_found(error):
 
 
 def create_app(object_name):
+    from .auth.controllers import auth_blueprint
     from .blog.controllers import blog_blueprint
     from .main.controllers import main_blueprint
 

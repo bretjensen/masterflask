@@ -9,3 +9,10 @@ class CommentForm(Form):
     )
     text = TextAreaField(u'Comment', validators=[DataRequired()])
 
+
+class PostForm(Form):
+    title = StringField(
+        'Title',
+        validators=[DataRequired(), Length(max=255)]
+    )
+    text = TextAreaField('Content', validators=[DataRequired()])

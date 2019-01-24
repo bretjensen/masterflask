@@ -1,8 +1,9 @@
 from sqlalchemy import func
 from flask import render_template, Blueprint, flash, redirect, url_for, current_app
+from flask_login import login_required, current_user
 from .models import db, Post, Tag, Comment, tags
 
-from .forms import CommentForm
+from .forms import CommentForm, PostForm
 from ..auth.models import User
 
 
@@ -12,6 +13,15 @@ blog_blueprint = Blueprint(
     template_folder='../templates/blog',
     url_prefix="/blog"
 )
+
+
+def sidebar_data():
+    recent = Post.query.order_by(Post.publish_date.desc()).limit(5).all()
+    top_tags = db.session.query(
+        Tag, func.count(tags.c.post_id).label('total')
+    ).join(tags).group_by(Tag).order_by('total DESC').limit(5).all()
+
+    return recent, top_tags
 
 
 @blog_blueprint.route('/')
@@ -25,6 +35,28 @@ def home(page=1):
         posts=posts,
         recent=recent,
         top_tags=top_tags
+    )
+
+
+@blog_blueprint.route('/new', methods=['GET', 'POST'])
+@login_required
+def new_post():
+    form = PostForm()
+    if form.validate_on_submit():
+        new_post = Post()
+        new_post.user_id = current_user.user_id
+        new_post.title = form.title.data
+        new_post.text = form.text.data
+
+        db.session.add(new_post)
+        db.session.commit()
+        flash("Post added", info)
+
+        return redirect(url_for('blog.post', post_id=new_post.id))
+    
+    return render_template(
+        'new.html',
+        form=form
     )
 
 
@@ -89,13 +121,3 @@ def posts_by_tag(tag_name):
         recent=recent,
         top_tags=top_tags
     )
-
-
-def sidebar_data():
-    recent = Post.query.order_by(Post.publish_date.desc()).limit(5).all()
-    top_tags = db.session.query(
-        Tag, func.count(tags.c.post_id).label('total')
-    ).join(tags).group_by(Tag).order_by('total DESC').limit(5).all()
-
-    return recent, top_tags
-

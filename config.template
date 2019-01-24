@@ -10,6 +10,10 @@ class Config(object):
     # https://www.google.com/recaptcha/intro/index.html
     RECAPTCHA_PUBLIC_KEY = ""
     RECAPTCHA_PRIVATE_KEY = ""
+    TWITTER_API_KEY = "XXX"
+    TWITTER_API_SECRET = "XXXX"
+    FACEBOOK_CLIENT_ID = "YYY"
+    FACEBOOK_CLIENT_SECRET = "YYY"
 
 
 class ProdConfig(Config):
