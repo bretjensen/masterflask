@@ -1,9 +1,11 @@
+import datetime
 from sqlalchemy import func
 from flask import render_template, Blueprint, flash, redirect, url_for, current_app
 from flask_login import login_required, current_user
 from .models import db, Post, Tag, Comment, tags
 
 from .forms import CommentForm, PostForm
+from ..auth import has_role
 from ..auth.models import User
 
 
@@ -40,17 +42,18 @@ def home(page=1):
 
 @blog_blueprint.route('/new', methods=['GET', 'POST'])
 @login_required
+@has_role('poster')
 def new_post():
     form = PostForm()
     if form.validate_on_submit():
         new_post = Post()
-        new_post.user_id = current_user.user_id
+        new_post.user_id = current_user.id
         new_post.title = form.title.data
         new_post.text = form.text.data
 
         db.session.add(new_post)
         db.session.commit()
-        flash("Post added", info)
+        flash("Post added", 'info')
 
         return redirect(url_for('blog.post', post_id=new_post.id))
     
@@ -58,6 +61,31 @@ def new_post():
         'new.html',
         form=form
     )
+
+
+@blog_blueprint.route('/edit/<int:id>', methods=['GET', 'POST'])
+@login_required
+@has_role('poster')
+def edit_post(id):
+    post = Post.query.get_or_404(id)
+    if current_user.id == post.user_id:
+        form = PostForm()
+        if form.validate_on_submit():
+            post.title = form.title.data
+            post.text = form.text.data
+            post.publish_date = datetime.datetime.now()
+            db.session.add(post)
+            db.session.commit()
+            return redirect(url_for('.post', post_id=post.id))
+        form.title.data = post.title
+        form.text.data = post.text
+        return render_template(
+            'edit.html',
+            form=form,
+            post=post
+        )
+    
+    abort(403)
 
 
 @blog_blueprint.route('/post/<int:post_id>', methods=('GET', 'POST'))

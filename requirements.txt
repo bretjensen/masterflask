@@ -11,5 +11,6 @@ flask-dance
 Flask-Migrate
 Flask-WTF
 Flask-Login
+Flask-Restful
 Faker
 blinker

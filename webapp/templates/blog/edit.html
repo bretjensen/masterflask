@@ -9,7 +9,7 @@
     </div>
 
     <div class="row">
-        <form method="POST" action="{{ url_for('.edit_post', id=post_id) }}">
+        <form method="POST" action="{{ url_for('.edit_post', id=post.id) }}">
             {{ form.hidden_tag() }}
             <div class="form-group">
                 {{ form.title.label }}

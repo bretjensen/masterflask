@@ -1,6 +1,7 @@
-from flask import flash, redirect, url_for, session, abort
+import functools
 
-from flask_login import LoginManager, AnonymousUserMixin, login_user
+from flask import flash, redirect, url_for, session, abort
+from flask_login import LoginManager, AnonymousUserMixin, login_user, current_user
 from flask_bcrypt import Bcrypt
 from flask_openid import OpenID
 from flask_dance.contrib.twitter import make_twitter_blueprint, twitter
@@ -41,6 +42,17 @@ def create_module(app, **kwargs):
 
     from .controllers import auth_blueprint
     app.register_blueprint(auth_blueprint)
+
+
+def has_role(name):
+    def real_decorator(f):
+        def wraps(*args, **kwargs):
+            if current_user.has_role(name):
+                return f(*args, **kwargs)
+            else:
+                abort(403)
+        return functools.update_wrapper(wraps, f)
+    return real_decorator
 
 @login_manager.user_loader
 def load_user(userid):
