@@ -1,4 +1,4 @@
 #!/bin/bash
-./init.sh
+#./init.sh
 export FLASK_APP=main.py
 flask run
